@@ -7,8 +7,10 @@ Simple music player with recommendation system.
 Vadim Zhur, group 153505
 
 ## Architecture of the application ##
-use-case
-uml
+### Use-case diagram ###
+![Use-case diagram](architecture_diagrams/use-case_diagram.jpg)
+### uml diagram ###
+![UML diagram](architecture_diagrams/uml_diagram.jpg)
 
 ## Main functions of the application ##
  * Listen to music
