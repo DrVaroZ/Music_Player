@@ -27,7 +27,7 @@ class MusicPlayer:
         self.song_box = tkinter.Listbox(self.root, bg="white", fg="black", width=50)
         self.song_box.pack(pady=10)
 
-        recommend_song_label = tkinter.Label(self.root, text="Enter your favourite track ids:", bg="white", fg="black")
+        recommend_song_label = tkinter.Label(self.root, text="Enter your favourite tracks:", bg="white", fg="black")
         recommend_song_label.pack()
         self.recommend_music_entry = tkinter.Entry(self.root, textvariable=self.recommend_music_var, font=('calibre', 10
                                                                                                            , 'normal'))

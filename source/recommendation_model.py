@@ -13,14 +13,19 @@ class RecommendationModel:
         tracks_df = pd.read_csv(
             'D:/Python projects/Music_Player/recommendation_system/spotify_genius_track_dataset/Data '
             'Sources/spotify_tracks.csv')
+        tracks_df = tracks_df.drop_duplicates(subset='name')
+
         kmeans_model = KMeans(n_clusters=5)
         kmeans_model.fit(tracks_df[['danceability', 'instrumentalness', 'energy', 'tempo', 'valence']])
+
         tracks_df['type'] = kmeans_model.labels_
         tracks_df.to_csv(
             'D:/Python projects/Music_Player/recommendation_system/spotify_genius_track_dataset/Data '
             'Sources/clustered_spotify_tracks.csv')
-        # ids = input('Enter comma-separated ids of your favorite songs\n> ').strip().split(',')
-        ids = favourite_music.strip().split(',')
+
+        favourite_names = favourite_music.strip().split(',')
+        ids_names = tracks_df[['name', 'id']].loc[tracks_df['name'].isin(favourite_names)]
+        ids = ids_names['id']
 
         # search the specified ids in this dataset and get the tracks
         favorites = tracks_df[tracks_df.id.isin(ids)]
