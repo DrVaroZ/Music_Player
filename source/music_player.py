@@ -10,7 +10,7 @@ class MusicPlayer:
     def __init__(self, root):
         self.root = root
         self.root.title("Music Player")
-        self.root.geometry("500x700")
+        self.root.geometry("500x750")
         pygame.init()
         pygame.mixer.init()
         self.find_song_var = tkinter.StringVar()
@@ -20,11 +20,15 @@ class MusicPlayer:
                               font=("times new roman", 20, "bold"), bg="white", fg="green")
         title.pack(side=tkinter.TOP, fill=tkinter.X)
 
+        find_song_label = tkinter.Label(self.root, text="Enter track to find:", bg="white", fg="black")
+        find_song_label.pack()
         self.find_song_entry = tkinter.Entry(self.root, textvariable=self.find_song_var, font=('calibre', 10, 'normal'))
         self.find_song_entry.pack()
         self.song_box = tkinter.Listbox(self.root, bg="white", fg="black", width=50)
         self.song_box.pack(pady=10)
 
+        recommend_song_label = tkinter.Label(self.root, text="Enter your favourite track ids:", bg="white", fg="black")
+        recommend_song_label.pack()
         self.recommend_music_entry = tkinter.Entry(self.root, textvariable=self.recommend_music_var, font=('calibre', 10
                                                                                                            , 'normal'))
         self.recommend_music_entry.pack()
