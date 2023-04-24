@@ -110,3 +110,5 @@ class MusicPlayer:
         for song in result.values:
             song_ = song[0]
             self.recommended_music_box.insert('end', song_)
+
+

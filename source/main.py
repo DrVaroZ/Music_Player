@@ -1,6 +1,8 @@
-import tkinter
-from music_player import MusicPlayer
+# from music_player import MusicPlayer
+from view_music_player import ViewMusicPlayer
+from control_music_player import ControlMusicPlayer
 
-root = tkinter.Tk()
-MusicPlayer(root)
-root.mainloop()
+
+player = ControlMusicPlayer()
+gui = ViewMusicPlayer(player)
+gui.run()
