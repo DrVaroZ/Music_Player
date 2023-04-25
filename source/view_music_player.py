@@ -91,9 +91,9 @@ class ViewMusicPlayer:
 
         self.recommended_music_box.delete(first=0, last=tkinter.END)
 
-        for song in recommendations.values:
-            song_ = song[0]
-            self.recommended_music_box.insert('end', song_)
+        for song in recommendations:
+            # song_ = song[0]
+            self.recommended_music_box.insert('end', song)
 
     def run(self):
         self.root.mainloop()

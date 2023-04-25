@@ -1,5 +1,7 @@
 import pandas as pd
 from sklearn.cluster import KMeans
+from sklearn.metrics import pairwise_distances
+import numpy as np
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -24,7 +26,8 @@ class RecommendationModel:
             'Sources/clustered_spotify_tracks.csv')
 
         favourite_names = favourite_music.strip().split(',')
-        ids_names = tracks_df[['name', 'id']].loc[tracks_df['name'].isin(favourite_names)]
+        ids_names = tracks_df[['name', 'id', 'type']].loc[tracks_df['name'].isin(favourite_names)]
+        # print(ids_names)
         ids = ids_names['id']
 
         # search the specified ids in this dataset and get the tracks
@@ -36,11 +39,23 @@ class RecommendationModel:
         for num in cluster_numbers:
             clusters[num] = cluster_numbers.count(num)
 
+        # print(clusters)
+
         # sort the cluster numbers and find out the number which occurs the most
-        user_favorite_cluster = [(k, v) for k, v in sorted(clusters.items(), key=lambda item: item[1])][0][0]
+        user_favorite_cluster = [(k, v) for k, v in sorted(clusters.items(), key=lambda item: item[1])][len(clusters.items()) - 1][0]
 
         # finally get the tracks of that cluster
-        suggestions = tracks_df[tracks_df.type == user_favorite_cluster]
-        result_recommendation = suggestions[['name']].loc[suggestions['id'].isin(suggestions['id'].head(n=7))]
+        # suggestions = tracks_df[tracks_df.type == user_favorite_cluster]
+        # result_recommendation = suggestions[['name']].loc[suggestions['id'].isin(suggestions['id'].head(n=7))]
+
+        distances = pairwise_distances(kmeans_model.cluster_centers_, tracks_df[
+            ['danceability', 'instrumentalness', 'energy', 'tempo', 'valence']], metric='euclidean')
+        ind = [np.argpartition(i, 5)[:5] for i in distances]
+        closest = [tracks_df[['name', 'id', 'type']].iloc[indexes] for indexes in ind]
+        # print(closest[user_favorite_cluster])
+        closest_df = pd.DataFrame(closest[user_favorite_cluster], columns=['name', 'id'])
+        result_recommendation = closest_df['name'].values.tolist()
+        # print(closest_df)
+        # print(result_recommendation)
 
         return result_recommendation
