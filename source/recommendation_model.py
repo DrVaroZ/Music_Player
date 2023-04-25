@@ -3,6 +3,9 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import pairwise_distances
 import numpy as np
 import warnings
+
+from new_track_window import NewTrackWindow
+
 warnings.filterwarnings('ignore')
 
 
@@ -14,8 +17,33 @@ class RecommendationModel:
     def recommend_music(self, favourite_music):
         tracks_df = pd.read_csv(
             'D:/Python projects/Music_Player/recommendation_system/spotify_genius_track_dataset/Data '
-            'Sources/spotify_tracks.csv')
+            'Sources/augmented_spotify_tracks.csv')
         tracks_df = tracks_df.drop_duplicates(subset='name')
+
+        favourite_names = favourite_music.strip().split(',')
+
+        for name in favourite_names:
+            if name in tracks_df['name'].values:
+                continue
+            else:
+                new = NewTrackWindow(name)
+                new.wait_window()  # wait for the window to be destroyed
+                features = new.features  # get the entered features from the window
+                if features is not None:
+                    favourite_df = pd.DataFrame(
+                        {'name': [name],
+                         'danceability': [features['danceability']],
+                         'energy': [features['energy']],
+                         'instrumentalness': [features['instrumentalness']],
+                         'tempo': [features['tempo']],
+                         'valence': [features['valence']]}
+                    )
+                    tracks_df = tracks_df.append(favourite_df, ignore_index=True)
+
+        print(tracks_df[['name', 'danceability', 'instrumentalness', 'energy', 'tempo', 'valence']].tail(n=5))
+        tracks_df.to_csv(
+            'D:/Python projects/Music_Player/recommendation_system/spotify_genius_track_dataset/Data '
+            'Sources/augmented_spotify_tracks.csv')
 
         kmeans_model = KMeans(n_clusters=5)
         kmeans_model.fit(tracks_df[['danceability', 'instrumentalness', 'energy', 'tempo', 'valence']])
@@ -25,7 +53,6 @@ class RecommendationModel:
             'D:/Python projects/Music_Player/recommendation_system/spotify_genius_track_dataset/Data '
             'Sources/clustered_spotify_tracks.csv')
 
-        favourite_names = favourite_music.strip().split(',')
         ids_names = tracks_df[['name', 'id', 'type']].loc[tracks_df['name'].isin(favourite_names)]
         # print(ids_names)
         ids = ids_names['id']

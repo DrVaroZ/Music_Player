@@ -1,5 +1,4 @@
 import tkinter
-
 import pygame
 
 
