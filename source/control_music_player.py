@@ -1,6 +1,5 @@
 import os
 import webbrowser
-
 import pygame
 
 from recommendation_model import RecommendationModel

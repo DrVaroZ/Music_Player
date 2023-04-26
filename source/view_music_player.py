@@ -1,10 +1,16 @@
 import tkinter
 import pygame
+import pandas as pd
+from new_track_window import NewTrackWindow
 
 
 class ViewMusicPlayer:
     def __init__(self, player):
         self.player = player
+        self.tracks_df = pd.read_csv(
+            'D:/Python projects/Music_Player/recommendation_system/spotify_genius_track_dataset/Data '
+            'Sources/augmented_spotify_tracks.csv')
+        self.tracks_df = self.tracks_df.drop_duplicates(subset='name')
 
         self.root = tkinter.Tk()
         self.root.title("Music Player")
@@ -84,8 +90,30 @@ class ViewMusicPlayer:
     def unpause(self):
         self.player.unpause()
 
+    def check_track(self, track_names):
+        for name in track_names:
+            if name in self.tracks_df['name'].values:
+                continue
+            else:
+                new = NewTrackWindow(name)
+                new.wait_window()  # wait for the window to be destroyed
+                features = new.features  # get the entered features from the window
+                if features is not None:
+                    favourite_df = pd.DataFrame(
+                        {'name': [name],
+                         'danceability': [features['danceability']],
+                         'energy': [features['energy']],
+                         'instrumentalness': [features['instrumentalness']],
+                         'tempo': [features['tempo']],
+                         'valence': [features['valence']]}
+                    )
+                    self.tracks_df = self.tracks_df.append(favourite_df, ignore_index=True)
+
     def recommend(self):
         favourite_music = self.recommend_music_entry.get()
+
+        self.check_track(favourite_music.strip().split(','))
+
         recommendations = self.player.recommend(favourite_music)
 
         self.recommended_music_box.delete(first=0, last=tkinter.END)
