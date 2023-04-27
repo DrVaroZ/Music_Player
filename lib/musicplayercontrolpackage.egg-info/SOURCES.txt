@@ -1,0 +1,8 @@
+setup.py
+musicplayercontrolpackage/__init__.py
+musicplayercontrolpackage/control_music_player.py
+musicplayercontrolpackage/recommendation_model.py
+musicplayercontrolpackage.egg-info/PKG-INFO
+musicplayercontrolpackage.egg-info/SOURCES.txt
+musicplayercontrolpackage.egg-info/dependency_links.txt
+musicplayercontrolpackage.egg-info/top_level.txt
