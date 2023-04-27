@@ -4,18 +4,18 @@ from sklearn.metrics import pairwise_distances
 import numpy as np
 import warnings
 
-from new_track_window import NewTrackWindow
-
 warnings.filterwarnings('ignore')
+
+from csv_serializer import CSVSerializer
 
 
 class RecommendationModel:
     def __init__(self, user_music):
         # self.user_info = user_info
         self.user_music = user_music
-        self.tracks_df = pd.read_csv(
-            'D:/Python projects/Music_Player/recommendation_system/spotify_genius_track_dataset/Data '
-            'Sources/augmented_spotify_tracks.csv')
+        self.tracks_df = CSVSerializer().csv_deserialize('D:/Python projects/Music_Player/recommendation_system'
+                                                         '/spotify_genius_track_dataset/Data '
+                                                         'Sources/augmented_spotify_tracks.csv')
         self.tracks_df = self.tracks_df.drop_duplicates(subset='name')
 
     def recommend_music(self, favourite_music):
@@ -24,17 +24,19 @@ class RecommendationModel:
         # self.check_track(favourite_names)
 
         print(self.tracks_df[['name', 'danceability', 'instrumentalness', 'energy', 'tempo', 'valence']].tail(n=5))
-        self.tracks_df.to_csv(
+
+        CSVSerializer().csv_serialize(
             'D:/Python projects/Music_Player/recommendation_system/spotify_genius_track_dataset/Data '
-            'Sources/augmented_spotify_tracks.csv')
+            'Sources/augmented_spotify_tracks.csv', self.tracks_df)
 
         kmeans_model = KMeans(n_clusters=5)
         kmeans_model.fit(self.tracks_df[['danceability', 'instrumentalness', 'energy', 'tempo', 'valence']])
 
         self.tracks_df['type'] = kmeans_model.labels_
-        self.tracks_df.to_csv(
+
+        CSVSerializer().csv_serialize(
             'D:/Python projects/Music_Player/recommendation_system/spotify_genius_track_dataset/Data '
-            'Sources/clustered_spotify_tracks.csv')
+            'Sources/clustered_spotify_tracks.csv', self.tracks_df)
 
         ids_names = self.tracks_df[['name', 'id', 'type']].loc[self.tracks_df['name'].isin(favourite_names)]
         # print(ids_names)
@@ -52,7 +54,8 @@ class RecommendationModel:
         # print(clusters)
 
         # sort the cluster numbers and find out the number which occurs the most
-        user_favorite_cluster = [(k, v) for k, v in sorted(clusters.items(), key=lambda item: item[1])][len(clusters.items()) - 1][0]
+        user_favorite_cluster = \
+            [(k, v) for k, v in sorted(clusters.items(), key=lambda item: item[1])][len(clusters.items()) - 1][0]
 
         # finally get the tracks of that cluster
         # suggestions = tracks_df[tracks_df.type == user_favorite_cluster]

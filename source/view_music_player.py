@@ -3,13 +3,15 @@ import pygame
 import pandas as pd
 from new_track_window import NewTrackWindow
 
+from csv_serializer import CSVSerializer
+
 
 class ViewMusicPlayer:
     def __init__(self, player):
         self.player = player
-        self.tracks_df = pd.read_csv(
-            'D:/Python projects/Music_Player/recommendation_system/spotify_genius_track_dataset/Data '
-            'Sources/augmented_spotify_tracks.csv')
+        self.tracks_df = CSVSerializer().csv_deserialize('D:/Python projects/Music_Player/recommendation_system'
+                                                         '/spotify_genius_track_dataset/Data '
+                                                         'Sources/augmented_spotify_tracks.csv')
         self.tracks_df = self.tracks_df.drop_duplicates(subset='name')
 
         self.root = tkinter.Tk()
@@ -108,6 +110,9 @@ class ViewMusicPlayer:
                          'valence': [features['valence']]}
                     )
                     self.tracks_df = self.tracks_df.append(favourite_df, ignore_index=True)
+        CSVSerializer().csv_serialize(
+            'D:/Python projects/Music_Player/recommendation_system/spotify_genius_track_dataset/Data '
+            'Sources/augmented_spotify_tracks.csv', self.tracks_df)
 
     def recommend(self):
         favourite_music = self.recommend_music_entry.get()
